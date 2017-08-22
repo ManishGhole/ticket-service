@@ -26,7 +26,11 @@ git clone https://github.com/ManishGhole/ticket-service-dao.git ticket-service-d
 ```
 git clone https://github.com/ManishGhole/ticket-service-utils.git ticket-service-utils/
 ```
-
+### Application configurations
+* [application.properties](https://github.com/ManishGhole/ticket-service-dao/blob/master/src/main/resources/application.properties):
+This contains application related configurarions
+* [ticketData.properties](https://github.com/ManishGhole/ticket-service-dao/blob/master/src/main/resources/ticketData.properties)
+This contains database (pretended) related configurarions
 
 # Automatic Execution (Build -> Run -> Test)
 This will show you, how to make use of automated scripts for build, run and test.
