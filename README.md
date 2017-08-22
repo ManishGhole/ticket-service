@@ -178,8 +178,9 @@ S1  S2  S3  S4  S5  S10  S9  S8  S7  S6
 Seats will be ranked on zigzag basis to make sure customers will always get consecutive seats.
 
 # Below things could have be done better
-* TreeSet: I could have used used TreeSet for getting seats ordered by rank. But TreeSet was dropping elements.
-Check example program I created for that. Click [here]. This will print the the output while running Junit test cases.(https://github.com/ManishGhole/ticket-service/blob/master/src/test/java/com/myprojects/ticket/service/TicketServiceTest.java#L426-L438)
+* TreeSet: I could have used used TreeSet for getting seats ordered by rank. But TreeSet was dropping elements. Check example program I created for that.
+[Click here](https://github.com/ManishGhole/ticket-service/blob/master/src/test/java/com/myprojects/ticket/service/TicketServiceTest.java#L426-L438).
+This will print the the output while running Junit test cases.
 * File logging: Due to unknown to your environment and where to store the log file, I used only console appending.
 * Application config: I bundled application confiuraton files within the project. In real life we don't bundle it with deployable artifacts.
 * Junit coverage: I left out POJOs, simulators and exception blocks for testng coverage.
