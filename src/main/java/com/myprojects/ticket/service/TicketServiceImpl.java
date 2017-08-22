@@ -49,11 +49,12 @@ final class TicketServiceImpl implements TicketService {
 	}
 
 	public SeatHold findAndHoldSeats(final int numSeats, final String customerEmail)
-			throws TicketServiceException, SeatsUnavailableException {
+			throws SeatsUnavailableException, SeatHoldTimeoutException, TicketServiceException {
 
 		if (numSeats < 1 || numSeats > getMaxSeatsRequest()) {
 			throw new TicketServiceException(
-					String.format("Invalid number of seats requested, it should minimum 1 or maximum %d", getMaxSeatsRequest()),
+					String.format("Invalid number of seats requested, it should minimum 1 or maximum %d",
+							getMaxSeatsRequest()),
 					TicketServiceErrorType.INVALID_NUM_SEATS);
 		}
 		if (!isValidEmail(customerEmail)) {
@@ -71,7 +72,8 @@ final class TicketServiceImpl implements TicketService {
 			if (getHoldReservationLock().tryLock(getHoldReservationTimeout(), TimeUnit.MILLISECONDS)) {
 				numAvailSeats = availSeats.size();
 				if (numAvailSeats == 0) {
-					throw new SeatsUnavailableException("Show is housefull for the day", TicketServiceErrorType.SHOW_HOUSEFULL);
+					throw new SeatsUnavailableException("Show is housefull for the day",
+							TicketServiceErrorType.SHOW_HOUSEFULL);
 				}
 				if (numAvailSeats < numSeats) {
 					throw new SeatsUnavailableException(String.format("Only seats %d are remaining", numAvailSeats));
@@ -107,7 +109,7 @@ final class TicketServiceImpl implements TicketService {
 	 * Holds seats for requested SeatHold reservation
 	 * 
 	 * @param holdSeats
-	 * @return
+	 * @return boolean
 	 * @throws TicketServiceException
 	 */
 	protected boolean holdSeats(List<Seat> holdSeats) throws TicketServiceException {
@@ -130,7 +132,8 @@ final class TicketServiceImpl implements TicketService {
 	}
 
 	public String reserveSeats(final int seatHoldId, final String customerEmail)
-			throws TicketServiceException, InvalidSeatHoldException {
+			throws InvalidSeatHoldException, SeatHoldExpiredException, SeatHoldAlreadyConfirmedException,
+			ReservationTimeoutException, TicketServiceException {
 
 		if (!isValidEmail(customerEmail)) {
 			throw new TicketServiceException("Invalid email: " + customerEmail, TicketServiceErrorType.INVALID_EMAIL);
@@ -144,7 +147,8 @@ final class TicketServiceImpl implements TicketService {
 		if (!StringUtils.equals(customerEmail, seatHold.getCustomerEmail())) {
 			throw new InvalidSeatHoldException(
 					String.format("Seat hold id '%d' has different email on file than provided '%s'", seatHoldId,
-							seatHold.getCustomerEmail()), TicketServiceErrorType.SEAT_HOLD_EMAIL_NOT_MATCHING);
+							seatHold.getCustomerEmail()),
+					TicketServiceErrorType.SEAT_HOLD_EMAIL_NOT_MATCHING);
 		}
 		if (seatHold.isExpired()) {
 			throw new SeatHoldExpiredException(String.format("Seat hold id '%d' is expired", seatHoldId));
