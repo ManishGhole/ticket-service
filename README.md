@@ -51,7 +51,7 @@ $ sh test.sh
 ```
 You will see sample output like this.
 ```
-*********************************************** SEAT HOLD REGULAR TEST *******************************************************************
+*********************************************** SEAT HOLD REGULAR TEST **************************************
 Number of seats available: 
 {"numSeatsAvailable":100}
 ************************************
@@ -177,7 +177,7 @@ S1  S2  S3  S4  S5  S10  S9  S8  S7  S6
 ```
 Seats will be ranked on zigzag basis to make sure customers will always get consecutive seats.
 
-# Below things could have be done better
+# Below things could have done better
 * TreeSet: I could have used used TreeSet for getting seats ordered by rank. But TreeSet was dropping elements. Check example program I created for that.
 [Click here](https://github.com/ManishGhole/ticket-service/blob/master/src/test/java/com/myprojects/ticket/service/TicketServiceTest.java#L426-L438).
 This will print the the output while running Junit test cases.
