@@ -121,3 +121,66 @@ $ curl -H "Content-Type: application/json" -X POST -d '{"seatHoldId":"1","email"
 # Sample Response
 $ {"confirmationId":"J6NYPU1E-1"}
 ```
+
+## Step 3.2: Testing RESTful service using HttpClient
+### numSeatsAvailable()
+```
+URL: http://localhost:8080/ticket-service/numSeatsAvailable/
+Method: POST
+```
+### findAndHoldSeats(int numSeats, String customerEmail)
+```
+URL: http://localhost:8080/ticket-service/holdSeats/
+Method: POST
+Content-Type: application/json
+Request-Body: {"numSeats":"5","email":"test@test.com"}
+```
+### reserveSeats(int seatHoldId, String customerEmail)
+```
+URL: http://localhost:8080/ticket-service/reserveSeats/
+Method: POST
+Content-Type: application/json
+Request-Body: {"seatHoldId":"1","email":"test@test.com"}
+```
+
+# Assumptions & Notes
+## What is seat type?
+Based on postion of the seat from stage, seat type will be determined.
+There are three seat types and seats will priced based on it.
+* GOLD: Most preferable and closest to the stage (Ofcourse based row number and column number & configuration).
+* SILVER: 2nd most preferrable seats in the hall.
+* BRONZE: Rest of the seats other than GOLD & SILVER
+## What is seat rank
+Rank defines the hierarchy of seats. 1st seat will have higher rank and last seat will have lower rank.
+Seats will be served based on first come first serve basis. Whoever comes first, will always get higher ranked seats.
+### Seat type and ranking (Example)
+Assume below configuration.
+```
+rows=5
+cols=5
+maxGoldRows=1
+maxSilverRows=2
+```
+Then thats how seats will be ranked and typed.
+```
+*********** STAGE **********
+S1    S2    S3    S4    S5  - GOLD
+S6    S7    S8    S9    S10 - SILVER
+S11   S12   S13   S14   S15 - SILVER
+S16   S17   S18   S19   S20 - BRONZE
+S21   S22   S23   S24   S25 - BRONZE
+```
+
+Here S1 will have highest rank and S25 will have lowest rank. But check below how first 10 seats are ranked.
+```
+S1  S2  S3  S4  S5  S10  S9  S8  S7  S6
+```
+Seats will be ranked on zigzag basis to make sure customers will always get consecutive seats.
+
+# Below things could have be done better
+* TreeSet: I could have used used TreeSet for getting seats ordered by rank. But TreeSet was dropping elements.
+Check example program I created for that. Click [here]. This will print the the output while running Junit test cases.(https://github.com/ManishGhole/ticket-service/blob/master/src/test/java/com/myprojects/ticket/service/TicketServiceTest.java#L426-L438)
+* File logging: Due to unknown to your environment and where to store the log file, I used only console appending.
+* Application config: I bundled application confiuraton files within the project. In real life we don't bundle it with deployable artifacts.
+* Junit coverage: I left out POJOs, simulators and exception blocks for testng coverage.
+* Junit testing is done with application configuration but not with specific test configuration.
